@@ -32,7 +32,6 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async findMe(@Request() req): Promise<User> {
-    console.log('/// userId', req.user);
     return await this.usersService.findMe(req.user.id);
   }
 

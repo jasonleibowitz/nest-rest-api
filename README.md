@@ -28,7 +28,7 @@ Template REST API built using [NestJS](https://github.com/nestjs/nest).
 
 ### Features:
 
-- [ ] Authentication using JWTs (Register, Login)
+- [ ] Authentication using JWTs & UseGuards (Register, Login)
 - [ ] Email Integration (Registration Confirmation, Forgot Password)
 - [ ] Scaffold CRUD (User, Widget)
 
