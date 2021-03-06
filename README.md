@@ -24,7 +24,13 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Template REST API built using [NestJS](https://github.com/nestjs/nest). 
+
+### Features:
+
+- [ ] Authentication using JWTs (Register, Login)
+- [ ] Email Integration (Registration Confirmation, Forgot Password)
+- [ ] Scaffold CRUD (User, Widget)
 
 ## Installation
 
