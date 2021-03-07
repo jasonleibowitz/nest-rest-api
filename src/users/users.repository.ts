@@ -7,10 +7,12 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
+  private logger = new Logger('Users Repository');
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { firstName, lastName, username, email, password } = createUserDto;
     const user = new User();
@@ -32,8 +34,14 @@ export class UsersRepository extends Repository<User> {
       await user.save();
     } catch (err) {
       if (err.code === '23505') {
+        this.logger.debug(
+          `Request to create user with duplicate username, ${user.username}`,
+        );
         throw new ConflictException('Username already exists');
       } else {
+        this.logger.error(
+          `Error saving user. User: ${JSON.stringify(user, null, 2)}`,
+        );
         throw new InternalServerErrorException();
       }
     }

@@ -1,9 +1,16 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  ValidationPipe,
+  Logger,
+} from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { configService } from './config/config.service';
 
 async function bootstrap() {
+  const port = configService.getPort();
+  const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
@@ -18,6 +25,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  await app.listen(3000);
+  await app.listen(port);
+  logger.log(`🚀 API Listening on Port ${port}`);
 }
 bootstrap();
