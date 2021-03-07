@@ -6,14 +6,14 @@ import {
   Param,
   Post,
   Put,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { User as UserEntity } from './entities/user.entity';
+import { User } from './user.decorator';
 
 import {
   ApiBearerAuth,
@@ -46,8 +46,9 @@ export class UsersController {
   })
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async findMe(@Request() req): Promise<User> {
-    return await this.usersService.findMe(req.user.id);
+  async findMe(@User('id') userId: string): Promise<UserEntity> {
+    // return req.user; -- Can just return the user from req. But client shouldn't have to even make this request
+    return await this.usersService.findMe(userId);
   }
 
   @Get(':id')
