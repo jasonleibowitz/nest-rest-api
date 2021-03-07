@@ -6,28 +6,35 @@ import {
   Get,
   Param,
   Post,
-  Put,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User as UserEntity } from './entities/user.entity';
 import { User } from './user.decorator';
 
 import {
+  ApiBadGatewayResponse,
   ApiBearerAuth,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/action.enum';
 import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
 
 @ApiTags('users')
+@ApiBearerAuth()
+@ApiUnauthorizedResponse({
+  description: 'You need to be logged in to perform that action',
+})
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
@@ -36,24 +43,26 @@ export class UsersController {
     private caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiBadGatewayResponse({ description: 'Error creating password hash' })
+  @ApiConflictResponse({ description: 'Username already exists' })
+  @ApiInternalServerErrorResponse({ description: 'Something went wrong' })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @ApiOperation({ summary: 'Get all users' })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can(Action.List, UserEntity))
   @Get()
-  findAll(): string {
+  findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get logged in user' })
-  @ApiResponse({ status: 200, type: User })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
+  @ApiForbiddenResponse({
+    description: 'You are not authorized to perform that action',
   })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -62,6 +71,11 @@ export class UsersController {
     return user;
   }
 
+  @ApiOperation({ summary: 'Get user by userId' })
+  @ApiForbiddenResponse({
+    description: 'You are not authorized to perform that action',
+  })
+  @ApiNotFoundResponse({ description: 'That user was not found' })
   @Get(':id')
   async findOne(@User() user: UserEntity, @Param('id') id: string) {
     const foundUser = await this.usersService.findOne(id);
@@ -79,6 +93,9 @@ export class UsersController {
   //   return this.usersService.update(+id, updateUserDto);
   // }
 
+  @ApiForbiddenResponse({
+    description: 'You are not authorized to perform that action',
+  })
   @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Delete, UserEntity),

@@ -12,6 +12,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
+import { UserLoginDto } from './dto/user-login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,8 +27,8 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Body() userLoginDto: UserLoginDto) {
+    return this.authService.login(userLoginDto);
   }
 
   @ApiOperation({ summary: 'User Sign Up' })
