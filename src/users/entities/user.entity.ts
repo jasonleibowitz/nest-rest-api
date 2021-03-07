@@ -1,9 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class User {
+@Unique(['username', 'email'])
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({
     example: 'eaa895f3-2f5c-40ab-bfd3-3086d7240c13',
@@ -40,6 +47,7 @@ export class User {
   @ApiProperty({ example: 'jasonleibowitz', description: "The user's uername" })
   username: string;
 
+  @Expose({ groups: ['admin'] })
   @Column({ default: false })
   isAdmin: boolean;
 }
