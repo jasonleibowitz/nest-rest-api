@@ -34,11 +34,30 @@ Template REST API built using [NestJS](https://github.com/nestjs/nest).
 
 ## Installation
 
+Before you can start the application you have to create an `.env` file by running
+
 ```bash
-$ npm install
+$ cp template.env .env
 ```
 
-## Running the app
+Then update all of the variables in your local version of `.env`. This file is not committed ot Git because it contains private keys you don't want exposed publicly. 
+
+
+```bash
+# Make sure you're using a compatible version of NodeJS
+$ nvm use
+
+# Install Node Modules
+$ npm install
+
+# Create a DB via Docker
+$ npm run start:dev:db
+
+# Run all migrations
+$ npm run typeorm:migration:run
+```
+
+## Running the App
 
 ```bash
 # development
@@ -51,7 +70,17 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Development
+
+### Generating New Migrations From New Entities
+This application uses TypeORM to interact with the Database. We can automatically generate new migrations based on the state of our entity files by following these instructions:
+
+1. First create a new entity, and related resources, using the nest CLI, `npx nest g new resource resourceName`
+2. Update the Entity file based on your ERD
+3. Compile the application with `npm run build`. We need our Entity fils in JS because TypeORM can't read TypeScript files
+4. Run the generate migration common, `npm run typeorm:migration:generate -- migrationName`
+
+### Test
 
 ```bash
 # unit tests
@@ -63,17 +92,3 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
