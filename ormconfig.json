@@ -10,10 +10,10 @@
   ],
   "migrationsTableName": "migration",
   "migrations": [
-    "migration/*.ts"
+    "src/migration/*.ts"
   ],
   "cli": {
-    "migrationsDir": "migration"
+    "migrationsDir": "src/migration"
   },
   "ssl": false
 }
