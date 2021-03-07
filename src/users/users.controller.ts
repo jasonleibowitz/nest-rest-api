@@ -8,7 +8,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User as UserEntity } from './entities/user.entity';
@@ -16,26 +15,20 @@ import { User } from './user.decorator';
 
 import {
   ApiBadGatewayResponse,
-  ApiBearerAuth,
   ApiConflictResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/action.enum';
 import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
+import { Auth } from 'src/common/auth.guard';
 
 @ApiTags('users')
-@ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'You need to be logged in to perform that action',
-})
-@UseGuards(JwtAuthGuard)
+@Auth()
 @Controller('users')
 export class UsersController {
   constructor(
