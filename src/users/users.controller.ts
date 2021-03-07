@@ -8,11 +8,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User as UserEntity } from './entities/user.entity';
-import { User } from './user.decorator';
-
 import {
   ApiBadGatewayResponse,
   ApiConflictResponse,
@@ -22,10 +17,18 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+
+// Shared
 import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/action.enum';
-import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
 import { Auth } from 'src/common/auth.guard';
+import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
+
+// User Domain
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User as UserEntity } from './entities/user.entity';
+import { User } from './user.decorator';
 
 @ApiTags('users')
 @Auth()

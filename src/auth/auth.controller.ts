@@ -1,9 +1,15 @@
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
-import { Public } from '../const';
-import { UsersService } from '../users/users.service';
-import { AuthService } from './auth.service';
+import { Controller, Post, UseGuards, Body } from '@nestjs/common';
+
+// Shared
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Public } from '../const';
+
+// Auth Domain
+import { AuthService } from './auth.service';
+
+// User Domain
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UsersService } from '../users/users.service';
 
 import {
   ApiCreatedResponse,
