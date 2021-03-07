@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   Post,
@@ -22,10 +23,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
+import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/action.enum';
+import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
 
 @ApiTags('users')
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -38,15 +41,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.List, UserEntity))
   @Get()
-  findAll(@User() user: UserEntity): string {
-    const ability = this.caslAbilityFactory.createForUser(user);
-    if (ability.can(Action.Read, 'all')) {
-      return this.usersService.findAll();
-    } else {
-      throw new UnauthorizedException();
-    }
+  findAll(): string {
+    return this.usersService.findAll();
   }
 
   @ApiBearerAuth()
@@ -56,38 +55,36 @@ export class UsersController {
     status: 401,
     description: 'Unauthorized',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
   @Get('me')
-  async findMe(@User() user: UserEntity): Promise<UserEntity> {
-    const ability = this.caslAbilityFactory.createForUser(user);
-    if (ability.can(Action.Read, user)) {
-      // return req.user; -- Can just return the user from req. But client shouldn't have to even make this request
-      return await this.usersService.findMe(user.id);
-    } else {
-      throw new UnauthorizedException();
-    }
+  findMe(@User() user: UserEntity): UserEntity {
+    return user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@User() user: UserEntity, @Param('id') id: string) {
-    const ability = this.caslAbilityFactory.createForUser(user);
     const foundUser = await this.usersService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
 
-    if (ability.can(Action.Read, foundUser[0])) {
+    if (ability.can(Action.Read, foundUser)) {
       return this.usersService.findOne(id);
     } else {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
+  // @Put(':id')
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(+id, updateUserDto);
+  // }
 
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Delete, UserEntity),
+  )
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

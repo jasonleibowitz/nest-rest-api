@@ -21,6 +21,7 @@ export class CaslAbilityFactory {
 
     if (user.isAdmin) {
       can(Action.Manage, 'all'); // read-write access to everything
+      can(Action.List, 'all');
     }
 
     can(Action.Read, User, { id: user.id });

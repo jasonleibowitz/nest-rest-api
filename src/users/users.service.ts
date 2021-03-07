@@ -20,10 +20,6 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    return await this.userRepository.find({ id });
-  }
-
-  async findMe(id: string): Promise<User> {
     const user = await this.userRepository.findOne(id);
     if (!user) throw new NotFoundException();
     return user;
@@ -37,7 +33,7 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    return `This action removes a user ${id} user`;
   }
 }
