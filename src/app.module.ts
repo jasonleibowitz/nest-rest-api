@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { configService } from './config/config.service';
 import { HealthModule } from './health/health.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { HealthModule } from './health/health.module';
     AuthModule,
     UsersModule,
     HealthModule,
+    CaslModule,
   ],
   providers: [],
 })

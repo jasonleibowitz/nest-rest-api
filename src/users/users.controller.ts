@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -21,20 +22,31 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
+import { Action } from 'src/casl/action.enum';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@User() user: UserEntity): string {
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.can(Action.Read, 'all')) {
+      return this.usersService.findAll();
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 
   @ApiBearerAuth()
@@ -46,14 +58,27 @@ export class UsersController {
   })
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async findMe(@User('id') userId: string): Promise<UserEntity> {
-    // return req.user; -- Can just return the user from req. But client shouldn't have to even make this request
-    return await this.usersService.findMe(userId);
+  async findMe(@User() user: UserEntity): Promise<UserEntity> {
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.can(Action.Read, user)) {
+      // return req.user; -- Can just return the user from req. But client shouldn't have to even make this request
+      return await this.usersService.findMe(user.id);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@User() user: UserEntity, @Param('id') id: string) {
+    const ability = this.caslAbilityFactory.createForUser(user);
+    const foundUser = await this.usersService.findOne(id);
+
+    if (ability.can(Action.Read, foundUser[0])) {
+      return this.usersService.findOne(id);
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 
   @Put(':id')
