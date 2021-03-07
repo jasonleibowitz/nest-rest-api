@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TerminusModule } from '@nestjs/terminus';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
@@ -16,7 +14,7 @@ import { HealthController } from './health/health.controller';
     AuthModule,
     UsersModule,
   ],
-  controllers: [AppController, UsersController, HealthController],
-  providers: [AppService],
+  controllers: [UsersController, HealthController],
+  providers: [],
 })
 export class AppModule {}
