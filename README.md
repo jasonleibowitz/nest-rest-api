@@ -53,6 +53,9 @@ $ npm install
 # Create a DB via Docker
 $ npm run start:dev:db
 
+# Create the dist bundle
+$ npm run build
+
 # Run all migrations
 $ npm run typeorm:migration:run
 ```
