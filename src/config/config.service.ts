@@ -30,8 +30,13 @@ class ConfigService {
     return env === 'production';
   }
 
+  public isMigration() {
+    const env = this.getValue('NODE_ENV', false);
+    return env === 'migration';
+  }
+
   public getTypeOrmConfig(): TypeOrmModuleOptions {
-    return {
+    const baseConfig: Partial<TypeOrmModuleOptions> = {
       type: 'postgres',
 
       host: this.getValue('POSTGRES_HOST'),
@@ -40,14 +45,20 @@ class ConfigService {
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DATABASE'),
 
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      entities: ['dist/**/*.entity.js'],
+
+      ssl: this.isProduction(),
+    };
+
+    if (!this.isMigration()) return baseConfig;
+
+    return {
+      ...baseConfig,
       migrationsTableName: 'migration',
-      migrations: ['src/migration/*.ts'],
+      migrations: ['src/migration/*{.js,.ts}'],
       cli: {
         migrationsDir: 'src/migration',
       },
-
-      ssl: this.isProduction(),
     };
   }
 }
