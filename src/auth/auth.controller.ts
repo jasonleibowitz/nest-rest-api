@@ -5,7 +5,12 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -16,8 +21,8 @@ export class AuthController {
   ) {}
 
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({ status: 201, description: 'Logged In Successfully' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiCreatedResponse({ description: 'Logged In Successfully' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@Request() req) {
@@ -25,7 +30,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'User Sign Up' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiCreatedResponse({ description: 'User Created Successfully' })
   @Public()
   @Post('/register')
   async register(@Body() createUserDto: CreateUserDto) {
