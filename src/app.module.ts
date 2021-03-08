@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { UsersController } from './users/users.controller';
 import { configService } from './config/config.service';
+import { HealthModule } from './health/health.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     AuthModule,
     UsersModule,
+    HealthModule,
+    CaslModule,
   ],
-  controllers: [AppController, UsersController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

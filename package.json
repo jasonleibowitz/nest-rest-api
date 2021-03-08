@@ -27,6 +27,7 @@
     "typeorm:migration:run": "NODE_ENV=migration npm run typeorm -- migration:run"
   },
   "dependencies": {
+    "@casl/ability": "^5.2.2",
     "@nestjs/common": "^7.5.1",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.5.1",
@@ -34,6 +35,8 @@
     "@nestjs/mapped-types": "^0.3.0",
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.5.1",
+    "@nestjs/swagger": "^4.7.15",
+    "@nestjs/terminus": "^7.1.0",
     "@nestjs/typeorm": "^7.1.5",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
@@ -45,6 +48,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
+    "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.31"
   },
   "devDependencies": {

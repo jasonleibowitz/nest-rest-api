@@ -2,12 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { User } from './entities/user.entity';
+import { UsersRepository } from './users.repository';
+import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([UsersRepository])],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, CaslAbilityFactory],
   exports: [UsersService],
 })
 export class UsersModule {}
