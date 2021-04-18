@@ -40,37 +40,15 @@ Before you can start the application you have to create an `.env` file by runnin
 $ cp template.env .env
 ```
 
-Then update all of the variables in your local version of `.env`. This file is not committed ot Git because it contains private keys you don't want exposed publicly. 
+Then update all of the variables in your local version of `.env`. This file is not committed to Git because it contains private keys you don't want exposed publicly. 
 
-
-```bash
-# Make sure you're using a compatible version of NodeJS
-$ nvm use
-
-# Install Node Modules
-$ npm install
-
-# Create a DB via Docker
-$ npm run start:dev:db
-
-# Create the dist bundle
-$ npm run build
-
-# Run all migrations
-$ npm run typeorm:migration:run
-```
-
-## Running the App
+This application is dockerized, so to start it just run:
 
 ```bash
-# development
-$ npm run start
+docker-compose up -d
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+## Run migrations
+docker-compose exec api npm run typeorm:migration:run
 ```
 
 ## Development

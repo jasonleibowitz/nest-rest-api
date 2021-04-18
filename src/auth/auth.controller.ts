@@ -17,7 +17,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { UserLoginDto } from './dto/user-login.dto';
 
 @ApiTags('auth')

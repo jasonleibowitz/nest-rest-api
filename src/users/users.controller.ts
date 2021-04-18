@@ -19,10 +19,10 @@ import {
 } from '@nestjs/swagger';
 
 // Shared
-import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-ability.factory';
-import { Action } from 'src/casl/action.enum';
-import { Auth } from 'src/common/auth.guard';
-import { CheckPolicies, PoliciesGuard } from 'src/common/policies.guard';
+import { AppAbility, CaslAbilityFactory } from '../casl/casl-ability.factory';
+import { Action } from '../casl/action.enum';
+import { Auth } from '../common/auth.guard';
+import { CheckPolicies, PoliciesGuard } from '../common/policies.guard';
 
 // User Domain
 import { UsersService } from './users.service';
